@@ -1,3 +1,4 @@
+import contextlib
 import copy
 from typing import Union
 from urllib.parse import urlencode
@@ -117,9 +118,16 @@ class SearchCore(RequestCore, RequestHandler, ComponentHandler):
             if playlistElementKey in element.keys() and findPlaylists:
                 self.resultComponents.append(self._getPlaylistComponent(element))
             if shelfElementKey in element.keys() and findVideos:
-                for shelfElement in self._getShelfComponent(element)['elements']:
-                    self.resultComponents.append(
-                        self._getVideoComponent(shelfElement, shelfTitle=self._getShelfComponent(element)['title']))
+                with contextlib.suppress(TypeError):
+                    self.resultComponents.extend(
+                        self._getVideoComponent(
+                            shelfElement,
+                            shelfTitle=self._getShelfComponent(element)['title'],
+                        )
+                        for shelfElement in self._getShelfComponent(element)[
+                            'elements'
+                        ]
+                    )
             if richItemKey in element.keys() and findVideos:
                 richItemElement = self._getValue(element, [richItemKey, 'content'])
                 ''' Initial fallback handling for VideosSearch '''
