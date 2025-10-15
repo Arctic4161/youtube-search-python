@@ -28,9 +28,12 @@ class ComponentHandler:
                 'duration':                    self._getValue(video, ['lengthText', 'accessibility', 'accessibilityData', 'label']),
             },
         }
-        component['link'] = 'https://www.youtube.com/watch?v=' + component['id']
-        component['channel']['link'] = 'https://www.youtube.com/channel/' + component['channel']['id']
-        component['shelfTitle'] = shelfTitle
+        try:
+            component['link'] = 'https://www.youtube.com/watch?v=' + component['id']
+            component['channel']['link'] = 'https://www.youtube.com/channel/' + component['channel']['id']
+            component['shelfTitle'] = shelfTitle
+        except:
+            pass
         return component
 
     def _getChannelComponent(self, element: dict) -> dict:
